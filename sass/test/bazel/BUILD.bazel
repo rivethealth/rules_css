@@ -1,0 +1,6 @@
+load("@better_rules_css//sass:rules.bzl", "configure_sass_compiler")
+
+configure_sass_compiler(
+    name = "sassc",
+    sass = "@better_rules_css_npm//sass:lib",
+)

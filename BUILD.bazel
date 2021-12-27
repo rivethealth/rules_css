@@ -1,0 +1,100 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//eslint:rules.bzl", "configure_eslint")
+load("@better_rules_javascript//javascript:rules.bzl", "js_file")
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_archive", "nodejs_binary")
+load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
+load("@rules_format//buildifier:rules.bzl", "buildifier")
+load("@rules_format//format:rules.bzl", "format")
+
+package(default_visibility = ["//visibility:public"])
+
+buildifier(
+    name = "buildifier",
+)
+
+format(
+    name = "buildifier_format",
+    srcs = ["@better_rules_css_files//:buildifier_files"],
+    formatter = ":buildifier",
+    prefix = "external/better_rules_css_files/files",
+)
+
+js_file(
+    name = "prettier_config",
+    src = "prettierrc.yml",
+    root = ":root",
+)
+
+configure_prettier(
+    name = "prettier",
+    config = ":prettier_config",
+    dep = "@better_rules_javascript_npm//prettier:lib",
+)
+
+format(
+    name = "prettier_format",
+    srcs = ["@better_rules_css_files//:prettier_files"],
+    formatter = ":prettier",
+    prefix = "external/better_rules_css_files/files",
+)
+
+nodejs_binary(
+    name = "doctoc",
+    dep = "@better_rules_javascript_npm//doctoc:lib",
+    main = "doctoc.js",
+)
+
+test_suite(
+    name = "test",
+    tests = [
+        "//nodejs/test",
+        "//rollup/test",
+        "//ts-proto/test",
+        "//typescript/test",
+    ],
+)
+
+configure_eslint(
+    name = "eslint",
+    config = ":eslint_config",
+    dep = "@better_rules_javascript_npm//eslint:lib",
+    plugins = [
+        "@better_rules_javascript_npm//typescript:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
+        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
+    ],
+)
+
+js_file(
+    name = "eslint_config",
+    src = ".eslintrc.js",
+    root = ":root",
+)
+
+format(
+    name = "eslint_lint",
+    srcs = ["@better_rules_css_files//:eslint_files"],
+    formatter = ":eslint",
+    prefix = "external/better_rules_css_files/files",
+)
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-javascript/root",
+    descriptors = ["package.json"],
+)
+
+nodejs_archive(
+    name = "archive",
+    deps = [
+        "@better_rules_css_npm//@types/argparse:lib",
+        "@better_rules_css_npm//@types/sass-loader:lib",
+        "@better_rules_css_npm//argparse:lib",
+        "@better_rules_css_npm//enhanced-resolve:lib",
+        "@better_rules_css_npm//sass:lib",
+        "@better_rules_css_npm//sass-loader:lib",
+        "@better_rules_javascript//commonjs/package:lib",
+        "@better_rules_javascript//nodejs/fs-linker:lib",
+        "@better_rules_javascript//worker/lib",
+    ],
+)

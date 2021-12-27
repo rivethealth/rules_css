@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "argparse": "~2.0.0",
+    "enhanced-resolve": "~5.8.0",
+    "sass": "~1.45.0",
+    "sass-loader": "~12.3.0",
+    "tslib": "~2.3.0",
+    "typescript": "~4.5.0"
+  },
+  "devDependencies": {
+    "@types/argparse": "~2.0.0",
+    "@types/sass-loader": "~8.0.0"
+  }
+}

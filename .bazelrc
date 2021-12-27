@@ -1,0 +1,17 @@
+import %workspace%/.deleted.bazelrc
+build --disk_cache=.bazel_cache
+build --experimental_allow_unresolved_symlinks
+build --experimental_strict_action_env
+build --incompatible_disable_depset_items=false
+build --verbose_failures
+run --disk_cache=.bazel_cache
+run --experimental_allow_unresolved_symlinks
+run --experimental_strict_action_env
+run --verbose_failures
+test --disk_cache=.bazel_cache
+test --experimental_allow_unresolved_symlinks
+test --experimental_strict_action_env
+test --test_env=HOME
+test --test_output=errors
+test --local_test_jobs=1
+test --verbose_failures

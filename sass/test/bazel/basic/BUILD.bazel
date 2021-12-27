@@ -1,0 +1,25 @@
+load("@better_rules_css//sass:rules.bzl", "sass_bundle", "sass_library")
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-css-test/basic",
+)
+
+sass_library(
+    name = "sass",
+    srcs = [
+        "lib.scss",
+        "styles.scss",
+    ],
+    root = ":root",
+)
+
+sass_bundle(
+    name = "css",
+    out = "styles.css",
+    compiler = "//:sassc",
+    dep = ":sass",
+    main = "styles.scss",
+    root = ":root",
+)

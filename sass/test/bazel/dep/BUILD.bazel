@@ -1,0 +1,36 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_css//sass:rules.bzl", "sass_bundle", "sass_library")
+
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-css-test/dep",
+    descriptors = ["package.json"],
+)
+
+cjs_root(
+    name = "lib_root",
+    package_name = "@better-rules-css-test/dep-lib",
+    descriptors = ["package.json"],
+)
+
+sass_library(
+    name = "lib_sass",
+    srcs = ["lib.scss"],
+    root = ":lib_root",
+)
+
+sass_library(
+    name = "sass",
+    srcs = ["styles.scss"],
+    root = ":root",
+    deps = [":lib_sass"],
+)
+
+sass_bundle(
+    name = "css",
+    out = "styles.css",
+    compiler = "//:sassc",
+    dep = ":sass",
+    main = "styles.scss",
+    root = ":root",
+)

@@ -1,0 +1,7 @@
+load("@better_rules_javascript//typescript:rules.bzl", "configure_ts_compiler")
+
+configure_ts_compiler(
+    name = "tsc",
+    ts = "@better_rules_css_npm//typescript:lib",
+    tslib = "@better_rules_css_npm//tslib:lib",
+)
