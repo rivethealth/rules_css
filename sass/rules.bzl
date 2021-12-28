@@ -210,7 +210,11 @@ def _sass_library_impl(ctx):
         transitive_files = depset(transitive = [transitive_descriptors, transitive_sass]),
     )
 
-    return [cjs_entries, sass_info]
+    default_info = DefaultInfo(
+        files = depset(sass),
+    )
+
+    return [cjs_entries, default_info, sass_info]
 
 sass_library = rule(
     attrs = {
