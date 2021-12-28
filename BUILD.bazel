@@ -28,7 +28,7 @@ js_file(
 configure_prettier(
     name = "prettier",
     config = ":prettier_config",
-    dep = "@better_rules_javascript_npm//prettier:lib",
+    dep = "@better_rules_css_npm//prettier:lib",
 )
 
 format(
@@ -40,28 +40,25 @@ format(
 
 nodejs_binary(
     name = "doctoc",
-    dep = "@better_rules_javascript_npm//doctoc:lib",
+    dep = "@better_rules_css_npm//doctoc:lib",
     main = "doctoc.js",
 )
 
 test_suite(
     name = "test",
     tests = [
-        "//nodejs/test",
-        "//rollup/test",
-        "//ts-proto/test",
-        "//typescript/test",
+        "//sass/test",
     ],
 )
 
 configure_eslint(
     name = "eslint",
     config = ":eslint_config",
-    dep = "@better_rules_javascript_npm//eslint:lib",
+    dep = "@better_rules_css_npm//eslint:lib",
     plugins = [
-        "@better_rules_javascript_npm//typescript:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
-        "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
+        "@better_rules_css_npm//typescript:lib",
+        "@better_rules_css_npm//@typescript-eslint/eslint-plugin:lib",
+        "@better_rules_css_npm//@typescript-eslint/parser:lib",
     ],
 )
 
@@ -80,7 +77,7 @@ format(
 
 cjs_root(
     name = "root",
-    package_name = "@better-rules-javascript/root",
+    package_name = "@better-rules-css/root",
     descriptors = ["package.json"],
 )
 

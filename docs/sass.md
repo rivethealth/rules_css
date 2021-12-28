@@ -1,33 +1,16 @@
-# rules_css
+# SASS
 
-Bazel rules for CSS, SASS, and related technologies.
+Sass-loader is used to resolve SASS modules.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Priorities](#priorities)
-- [Features](#features)
 - [Example](#example)
-- [Documentation](#documentation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Priorities
-
-1. Flexibility and extensibility
-1. Performance
-1. Bazel idioms
-1. Clear factorization
-
-## Features
-
-- [x] languages
-  - [x] SASS
-- [ ] dev
-  - [x] Stardoc
-  - [ ] CI
-
 ## Example
+
 
 **package.json**
 
@@ -39,7 +22,7 @@ Bazel rules for CSS, SASS, and related technologies.
 
 ```scss
 button {
-  border: 1px solid red;
+    border: 1px solid red;
 }
 ```
 
@@ -49,7 +32,7 @@ button {
 @import "lib";
 
 body {
-  margin: 0;
+    margin: 0;
 }
 ```
 
@@ -90,32 +73,3 @@ sass_library(
     out = "styles.css",
 )
 ```
-
-Running
-
-```sh
-bazel build :css
-cat bazel-bin/styles.css
-```
-
-outputs
-
-```css
-button {
-  border: 1px solid red;
-}
-
-body {
-  margin: 0;
-}
-```
-
-## Documentation
-
-### Topics
-
-[SASS](docs/sass.md)
-
-### Stardoc
-
-See auto-generated [Stardoc documentation](docs/stardoc).

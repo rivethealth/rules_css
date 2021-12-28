@@ -5,4 +5,9 @@ package(default_visibility = ["//visibility:public"])
 bzl_library(
     name = "bzl",
     srcs = glob(["**/*.bzl"]),
+    deps = [
+        "@better_rules_javascript//commonjs:bzl",
+        "@better_rules_javascript//nodejs:bzl",
+        "@better_rules_javascript//typescript:bzl",
+    ],
 )

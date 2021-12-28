@@ -1,0 +1,9 @@
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+pkg_tar(
+    name = "docs",
+    srcs = [
+        "//sass/doc",
+    ],
+    mode = "0644",
+)
