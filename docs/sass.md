@@ -11,7 +11,6 @@ Sass-loader is used to resolve SASS modules.
 
 ## Example
 
-
 **package.json**
 
 ```json
@@ -22,7 +21,7 @@ Sass-loader is used to resolve SASS modules.
 
 ```scss
 button {
-    border: 1px solid red;
+  border: 1px solid red;
 }
 ```
 
@@ -32,7 +31,7 @@ button {
 @import "lib";
 
 body {
-    margin: 0;
+  margin: 0;
 }
 ```
 

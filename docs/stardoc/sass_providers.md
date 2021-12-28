@@ -1,7 +1,5 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-
-
 <a id="#SassCompilerInfo"></a>
 
 ## SassCompilerInfo
@@ -14,11 +12,9 @@ Sass compiler
 
 **FIELDS**
 
-
-| Name  | Description |
-| :------------- | :------------- |
-| <a id="SassCompilerInfo-bin"></a>bin |  Executable    |
-
+| Name                                 | Description |
+| :----------------------------------- | :---------- |
+| <a id="SassCompilerInfo-bin"></a>bin | Executable  |
 
 <a id="#SassInfo"></a>
 
@@ -33,14 +29,11 @@ Sass
 
 **FIELDS**
 
-
-| Name  | Description |
-| :------------- | :------------- |
-| <a id="SassInfo-name"></a>name |  CommonJS name    |
-| <a id="SassInfo-package"></a>package |  CommonJS package    |
-| <a id="SassInfo-transitive_deps"></a>transitive_deps |  Transitive deps    |
-| <a id="SassInfo-transitive_descriptors"></a>transitive_descriptors |  Transitive descriptors    |
-| <a id="SassInfo-transitive_packages"></a>transitive_packages |  Transitive packages    |
-| <a id="SassInfo-transitive_sass"></a>transitive_sass |  Transitive Sass files    |
-
-
+| Name                                                               | Description            |
+| :----------------------------------------------------------------- | :--------------------- |
+| <a id="SassInfo-name"></a>name                                     | CommonJS name          |
+| <a id="SassInfo-package"></a>package                               | CommonJS package       |
+| <a id="SassInfo-transitive_deps"></a>transitive_deps               | Transitive deps        |
+| <a id="SassInfo-transitive_descriptors"></a>transitive_descriptors | Transitive descriptors |
+| <a id="SassInfo-transitive_packages"></a>transitive_packages       | Transitive packages    |
+| <a id="SassInfo-transitive_sass"></a>transitive_sass               | Transitive Sass files  |
