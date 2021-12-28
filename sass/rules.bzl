@@ -109,6 +109,9 @@ def _sass_bundle(ctx):
         inputs = depset([package_manifest], transitive = [dep.transitive_descriptors, dep.transitive_sass]),
         tools = [compiler.bin.files_to_run],
         outputs = [out],
+        execution_requirements = {
+            "supports-workers": "1",
+        },
     )
 
     default_info = DefaultInfo(
