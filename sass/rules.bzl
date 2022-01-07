@@ -1,4 +1,5 @@
 load(":providers.bzl", "SassCompilerInfo", "SassInfo")
+load("//css:providers.bzl", "CssInfo")
 load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_entries", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
@@ -34,7 +35,7 @@ def configure_sass_compiler(name, sass, visibility = None):
             "@better_rules_css_npm//sass-loader:lib",
             "@better_rules_javascript//commonjs/package:lib",
             "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//worker/lib",
+            "@better_rules_javascript//bazel/worker:lib",
         ],
         strip_prefix = "better_rules_css/sass/compiler",
         config = "%s.tsconfig" % name,
@@ -118,6 +119,15 @@ def _sass_bundle(ctx):
         files = depset([out]),
     )
 
+    css_info = CssInfo(
+        name = cjs_info.name,
+        package = cjs_info.package,
+        transitive_css = depset([out]),
+        transitive_deps = depset(),
+        transitive_packages = depset([cjs_info.package]),
+        transitive_srcs = depset(),
+    )
+
     cjs_entries = CjsEntries(
         name = cjs_info.name,
         package = cjs_info.package,
@@ -126,7 +136,7 @@ def _sass_bundle(ctx):
         transitive_files = depset([out] + cjs_info.descriptors),
     )
 
-    return [cjs_entries, default_info]
+    return [css_info, cjs_entries, default_info]
 
 sass_bundle = rule(
     attrs = {

@@ -2015,6 +2015,7 @@ __metadata:
     prettier: ~2.4.0
     sass: ~1.45.0
     sass-loader: ~12.3.0
+    sass-svg-uri: ~1.0.0
     tslib: ~2.3.0
     typescript: ~4.5.0
   languageName: unknown
@@ -2062,6 +2063,13 @@ __metadata:
     sass:
       optional: true
   checksum: b755e6d5ceddb70d54334b53f70546b4afc9af5f9704cc0e2666894d0568bdaeccb2b07056bd35465c22c51c55e1d790023b32b9aa0977080403036ef6c47b29
+  languageName: node
+  linkType: hard
+
+"sass-svg-uri@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "sass-svg-uri@npm:1.0.0"
+  checksum: 75a2af6cc4ac44c262309f51c290a1a5120ab5cd45cabafd0faabd9ad3bb6898417d3993fdfdf65efbf0ff9878d105d2bb8e1502db29f13c41974fb4adaa3f1a
   languageName: node
   linkType: hard
 

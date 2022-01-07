@@ -5,12 +5,14 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-css-test/dep",
     descriptors = ["package.json"],
+    sealed = True,
 )
 
 cjs_root(
     name = "lib_root",
     package_name = "@better-rules-css-test/dep-lib",
     descriptors = ["package.json"],
+    sealed = True,
 )
 
 sass_library(
@@ -23,7 +25,10 @@ sass_library(
     name = "sass",
     srcs = ["styles.scss"],
     root = ":root",
-    deps = [":lib_sass"],
+    deps = [
+        ":lib_sass",
+        "@better_rules_css_npm//sass-svg-uri:sass",
+    ],
 )
 
 sass_bundle(

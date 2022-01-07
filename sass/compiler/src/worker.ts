@@ -22,8 +22,14 @@ function importer(): sass.LegacyAsyncImporter {
   return function (originalUrl, prev, done) {
     const { fromImport } = this;
     resolver(prev, originalUrl, fromImport).then(
-      (file) => done({ file }),
-      (e) => done(e),
+      (file) => {
+        console.error("DONE", file);
+        done({ file });
+      },
+      (e) => {
+        console.error("ERROR", e);
+        done(e);
+      },
     );
   };
 }

@@ -3010,6 +3010,13 @@ PACKAGES = [
         "url": "https://registry.npmjs.org/sass-loader/-/sass-loader-12.3.0.tgz",
     },
     {
+        "deps": [],
+        "extra_deps": {},
+        "id": "sass-svg-uri@1.0.0",
+        "name": "sass-svg-uri",
+        "url": "https://registry.npmjs.org/sass-svg-uri/-/sass-svg-uri-1.0.0.tgz",
+    },
+    {
         "deps": [
             {
                 "dep": "chokidar@3.5.2",
@@ -3691,6 +3698,10 @@ ROOTS = [
     {
         "dep": "sass-loader@12.3.0",
         "name": "sass-loader",
+    },
+    {
+        "dep": "sass-svg-uri@1.0.0",
+        "name": "sass-svg-uri",
     },
     {
         "dep": "tslib@2.3.1",

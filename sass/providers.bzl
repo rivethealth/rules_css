@@ -16,3 +16,6 @@ SassCompilerInfo = provider(
         "bin": "Executable",
     },
 )
+
+def sass_npm_label(repo):
+    return "@%s//:sass" % repo
