@@ -1,9 +1,10 @@
 load(":providers.bzl", "SassCompilerInfo", "SassInfo")
 load("//css:providers.bzl", "CssInfo")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "create_entries", "default_strip_prefix", "gen_manifest", "output_prefix", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
+load("@better_rules_javascript//util:path.bzl", "output")
 
 def configure_sass_compiler(name, sass, visibility = None):
     cjs_root(
@@ -78,14 +79,19 @@ sass_compiler = rule(
 
 def _sass_bundle(ctx):
     compiler = ctx.attr.compiler[SassCompilerInfo]
-    out = ctx.actions.declare_file(ctx.attr.out)
     dep = ctx.attr.dep[SassInfo]
     cjs_info = ctx.attr.root[CjsInfo]
     main = ctx.attr.main
+    output_ = output(ctx.label, ctx.actions)
 
-    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
+    out_path = output_root(
+        root = cjs_info.package,
+        package_output = output_,
+        prefix = ctx.attr.out,
+    )
+    out = ctx.actions.declare_file(out_path)
 
-    package_manifest = ctx.actions.declare_file("%s/package-manifest.json" % ctx.attr.name)
+    package_manifest = ctx.actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
     gen_manifest(
         actions = ctx.actions,
         manifest_bin = ctx.attr._manifest[DefaultInfo],
@@ -107,7 +113,7 @@ def _sass_bundle(ctx):
         arguments = [args],
         executable = compiler.bin.files_to_run.executable,
         mnemonic = "SassCompile",
-        inputs = depset([package_manifest], transitive = [dep.transitive_descriptors, dep.transitive_sass]),
+        inputs = depset([package_manifest], transitive = [dep.transitive_files]),
         tools = [compiler.bin.files_to_run],
         outputs = [out],
         execution_requirements = {
@@ -122,10 +128,10 @@ def _sass_bundle(ctx):
     css_info = CssInfo(
         name = cjs_info.name,
         package = cjs_info.package,
-        transitive_css = depset([out]),
         transitive_deps = depset(),
+        transitive_files = depset([out]),
         transitive_packages = depset([cjs_info.package]),
-        transitive_srcs = depset(),
+        transitive_srcs = depset(),  # TODO
     )
 
     cjs_entries = CjsEntries(
@@ -170,57 +176,60 @@ sass_bundle = rule(
 def _sass_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
     srcs = ctx.files.srcs
-    prefix = output_prefix(cjs_info.package.path, ctx.label, ctx.actions)
-    if ctx.attr.prefix:
-        prefix = "%s/%s" % (prefix, ctx.attr.prefix)
+    output_ = output(ctx.label, ctx.actions)
+    prefix = ctx.attr.prefix
     strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
     deps = [dep[SassInfo] for dep in ctx.attr.deps]
+    workspace_name = ctx.workspace_name
 
-    sass = create_entries(
-        ctx = ctx,
-        actions = ctx.actions,
-        srcs = srcs,
-        prefix = prefix,
-        strip_prefix = strip_prefix,
-    )
-
-    transitive_packages = depset(
-        [cjs_info.package],
-        transitive = [sass_info.transitive_packages for sass_info in deps],
-    )
-    transitive_deps = depset(
-        [create_dep(
-            id = cjs_info.package.id,
-            dep = dep[SassInfo].package.id,
-            label = dep.label,
-            name = dep[SassInfo].name,
-        ) for dep in ctx.attr.deps],
-        transitive = [sass_info.transitive_deps for sass_info in deps],
-    )
-    transitive_descriptors = depset(
-        cjs_info.descriptors,
-        transitive = [sass_info.transitive_descriptors for sass_info in deps],
-    )
-    transitive_sass = depset(
-        sass,
-        transitive = [sass_info.transitive_sass for sass_info in deps],
-    )
+    sass = []
+    for file in srcs:
+        path = output_name(
+            workspace_name = workspace_name,
+            file = file,
+            root = cjs_info.package,
+            package_output = output_,
+            prefix = prefix,
+            strip_prefix = strip_prefix,
+        )
+        if file.path == "%s/%s" % (output_.path, path):
+            sass.append(file)
+        else:
+            sass_ = ctx.actions.declare_file(path)
+            ctx.actions.symlink(
+                output = sass_,
+                target_file = file,
+            )
+            sass.append(sass_)
 
     sass_info = SassInfo(
         name = cjs_info.name,
         package = cjs_info.package,
-        transitive_packages = transitive_packages,
-        transitive_descriptors = transitive_descriptors,
-        transitive_deps = transitive_deps,
-        transitive_sass = transitive_sass,
+        transitive_packages = depset(
+            [cjs_info.package],
+            transitive = [sass_info.transitive_packages for sass_info in deps],
+        ),
+        transitive_deps = depset(
+            [create_dep(
+                id = cjs_info.package.id,
+                dep = dep[SassInfo].package.id,
+                label = dep.label,
+                name = dep[SassInfo].name,
+            ) for dep in ctx.attr.deps],
+            transitive = [sass_info.transitive_deps for sass_info in deps],
+        ),
+        transitive_files = depset(
+            cjs_info.descriptors + sass,
+            transitive = [sass_info.transitive_files for sass_info in deps],
+        ),
     )
 
     cjs_entries = CjsEntries(
         name = cjs_info.name,
         package = cjs_info.package,
-        transitive_packages = transitive_packages,
-        transitive_deps = transitive_deps,
-        transitive_files = depset(transitive = [transitive_descriptors, transitive_sass]),
+        transitive_packages = sass_info.transitive_packages,
+        transitive_deps = sass_info.transitive_deps,
+        transitive_files = sass_info.transitive_files,
     )
 
     default_info = DefaultInfo(

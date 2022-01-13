@@ -129,26 +129,24 @@ http_archive(
 
 # Format
 
-local_repository(
+FORMAT_VERSION = "a87f0df6f3f1d8de441bf1662eddbfc4a9f075e4"
+
+http_archive(
     name = "rules_format",
-    path = "../rules_format",
+    sha256 = "713e5b851071d68d51db17744c3f195ea6cfd72f8115f6b77977095faf9a5cef",
+    strip_prefix = "rules_format-%s" % FORMAT_VERSION,
+    url = "https://github.com/rivethealth/rules_format/archive/%s.tar.gz" % FORMAT_VERSION,
 )
 
 load("@rules_format//file:workspace.bzl", "files")
 
-files(
-    name = "better_rules_css_files",
-    build = "@better_rules_css//:BUILD.file.bazel",
-    root_file = "@better_rules_css//:WORKSPACE.bazel",
-)
-
 # JavaScript
 
-JAVACRIPT_VERSION = "bcfb452c939ba9d218e193a4166a467dbcc76c19"
+JAVACRIPT_VERSION = "fc996d766c62afb3eda4a16de2c0296024e492b6"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "d7dcd45359317c87560b5dd957a04258d77d776556335226c132083329a14bc3",
+    sha256 = "6827badc8716daab2e42498ca6ff74231a0b8ba187b7fed462fed77caaa333c0",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,
@@ -164,3 +162,9 @@ javascript_repositories()
 load("//rules:workspace.bzl", "css_repositories")
 
 css_repositories()
+
+files(
+    name = "better_rules_css_files",
+    build = "@better_rules_css//:BUILD.file.bazel",
+    root_file = "@better_rules_css//:WORKSPACE.bazel",
+)

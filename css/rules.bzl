@@ -8,8 +8,7 @@ def _js_import_css_impl(ctx):
         name = css_info.name,
         package = css_info.package,
         transitive_deps = css_info.transitive_deps,
-        transitive_descriptors = css_info.transitive_descriptors,
-        transitive_css = css_info.transitive_css,
+        transitive_files = css_info.transitive_files,
         transitive_packages = css_info.transitive_packages,
         transitive_srcs = css_info.transitive_srcs,
     )

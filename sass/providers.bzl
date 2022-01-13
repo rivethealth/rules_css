@@ -4,9 +4,8 @@ SassInfo = provider(
         "name": "CommonJS name",
         "package": "CommonJS package",
         "transitive_deps": "Transitive deps",
-        "transitive_descriptors": "Transitive descriptors",
+        "transitive_files": "Transitive descriptors and Sass files",
         "transitive_packages": "Transitive packages",
-        "transitive_sass": "Transitive Sass files",
     },
 )
 

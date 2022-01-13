@@ -1,4 +1,21 @@
+load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+package(default_visibility = ["//visibility:public"])
+
+sh_binary(
+    name = "gen",
+    srcs = ["gen.sh"],
+    data = [
+        ":doctoc",
+        ":gen_docs_data",
+    ],
+)
+
+filegroup(
+    name = "gen_docs_data",
+    srcs = ["//docs"],
+)
 
 pkg_tar(
     name = "docs",
@@ -6,4 +23,10 @@ pkg_tar(
         "//sass/doc",
     ],
     mode = "0644",
+)
+
+nodejs_binary(
+    name = "doctoc",
+    dep = "@better_rules_javascript_npm//doctoc:lib",
+    main = "doctoc.js",
 )
