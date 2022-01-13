@@ -1,6 +1,6 @@
 load(":providers.bzl", "SassCompilerInfo", "SassInfo")
 load("//css:providers.bzl", "CssInfo")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "default_strip_prefix", "gen_manifest", "output_name", "output_root", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "default_strip_prefix", "gen_manifest", "output_name", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
@@ -82,14 +82,7 @@ def _sass_bundle(ctx):
     dep = ctx.attr.dep[SassInfo]
     cjs_info = ctx.attr.root[CjsInfo]
     main = ctx.attr.main
-    output_ = output(ctx.label, ctx.actions)
-
-    out_path = output_root(
-        root = cjs_info.package,
-        package_output = output_,
-        prefix = ctx.attr.out,
-    )
-    out = ctx.actions.declare_file(out_path)
+    out = ctx.outputs.out
 
     package_manifest = ctx.actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
     gen_manifest(
@@ -150,7 +143,7 @@ sass_bundle = rule(
             mandatory = True,
             providers = [SassCompilerInfo],
         ),
-        "out": attr.string(
+        "out": attr.output(
             mandatory = True,
         ),
         "dep": attr.label(
