@@ -2,6 +2,7 @@ load("@rules_format//format:rules.bzl", "format")
 load("@rules_format//buildifier:rules.bzl", "buildifier")
 load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
 load("@better_rules_javascript//eslint:rules.bzl", "configure_eslint")
+load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
 
 buildifier(
     name = "buildifier",
@@ -42,12 +43,6 @@ sh_binary(
 )
 
 sh_binary(
-    name = "gen_npm",
-    srcs = ["gen-npm.sh"],
-    data = ["@better_rules_javascript//npm/yarn-gen:bin"],
-)
-
-sh_binary(
     name = "gen_bazelrc",
     srcs = ["gen-bazelrc.sh"],
     data = ["deleted.bazelrc.tpl"],
@@ -81,4 +76,9 @@ format(
     srcs = ["@better_rules_css_files//:prettier_files"],
     formatter = ":prettier",
     prefix = "external/better_rules_css_files/files",
+)
+
+yarn_resolve(
+    name = "resolve_npm",
+    output = "rules/npm_data.bzl",
 )

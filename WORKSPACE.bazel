@@ -142,11 +142,11 @@ load("@rules_format//file:workspace.bzl", "files")
 
 # JavaScript
 
-JAVACRIPT_VERSION = "fc996d766c62afb3eda4a16de2c0296024e492b6"
+JAVACRIPT_VERSION = "e9f74c4818d6579581820565ca8a0c46f1e72249"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "6827badc8716daab2e42498ca6ff74231a0b8ba187b7fed462fed77caaa333c0",
+    sha256 = "77c0df99ab06ada59a3ff65fe48e8a661e25dd62fafa2491e63a3370bbcfa2cb",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,
