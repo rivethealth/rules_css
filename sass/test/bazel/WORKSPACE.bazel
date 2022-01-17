@@ -49,11 +49,11 @@ rules_proto_grpc_repos()
 
 # JavaScript
 
-JAVACRIPT_VERSION = "4f5ec4c9226c2bb96c51a5bc8acfefe82b9f4b3f"
+JAVACRIPT_VERSION = "8112cc17fe544e0019103ecad03fc0d5e72261b1"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "4440400fbf72dd5eab5419d15992eba5c77237bef04c5b3d7d595f51acbfc431",
+    sha256 = "9e3009d5fd8d4d28199244dbc1bc7e3eb977e979fa4fd156c14b18734b76adb9",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,

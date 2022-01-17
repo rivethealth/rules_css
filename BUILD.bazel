@@ -36,6 +36,7 @@ nodejs_archive(
         "@better_rules_javascript//bazel/worker:lib",
         "@better_rules_javascript//commonjs/package:lib",
         "@better_rules_javascript//nodejs/fs-linker:lib",
+        "@better_rules_javascript//util/json:lib",
     ],
 )
 
