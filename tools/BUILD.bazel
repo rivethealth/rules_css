@@ -1,5 +1,5 @@
-load("@rules_format//format:rules.bzl", "format")
-load("@rules_format//buildifier:rules.bzl", "buildifier")
+load("@rules_file//buildifier:rules.bzl", "buildifier")
+load("@rules_file//generate:rules.bzl", "format", "generate_test", "multi_generate")
 load("@better_rules_javascript//prettier:rules.bzl", "configure_prettier")
 load("@better_rules_javascript//eslint:rules.bzl", "configure_eslint")
 load("@better_rules_javascript//npm:rules.bzl", "yarn_resolve")
@@ -12,7 +12,7 @@ format(
     name = "buildifier_format",
     srcs = ["@better_rules_css_files//:buildifier_files"],
     formatter = ":buildifier",
-    prefix = "external/better_rules_css_files/files",
+    strip_prefix = "files",
 )
 
 configure_eslint(
@@ -23,22 +23,6 @@ configure_eslint(
         "@better_rules_javascript_npm//typescript:lib",
         "@better_rules_javascript_npm//@typescript-eslint/eslint-plugin:lib",
         "@better_rules_javascript_npm//@typescript-eslint/parser:lib",
-    ],
-)
-
-format(
-    name = "eslint_lint",
-    srcs = ["@better_rules_css_files//:eslint_files"],
-    formatter = ":eslint",
-    prefix = "external/better_rules_css_files/files",
-)
-
-sh_binary(
-    name = "format",
-    srcs = ["format.sh"],
-    data = [
-        ":buildifier_format",
-        ":prettier_format",
     ],
 )
 
@@ -59,10 +43,29 @@ filegroup(
     srcs = ["//:nodejs_archive"],
 )
 
-sh_binary(
+format(
     name = "lint",
-    srcs = ["lint.sh"],
-    data = [":eslint_lint"],
+    srcs = ["@better_rules_css_files//:eslint_files"],
+    formatter = ":eslint",
+    prefix = "external/better_rules_css_files/files",
+)
+
+generate_test(
+    name = "lint_test",
+    generate = ":lint",
+)
+
+multi_generate(
+    name = "format",
+    deps = [
+        ":buildifier_format",
+        ":prettier_format",
+    ],
+)
+
+generate_test(
+    name = "format_test",
+    generate = ":format",
 )
 
 configure_prettier(
@@ -75,7 +78,7 @@ format(
     name = "prettier_format",
     srcs = ["@better_rules_css_files//:prettier_files"],
     formatter = ":prettier",
-    prefix = "external/better_rules_css_files/files",
+    prefix = "files",
 )
 
 yarn_resolve(

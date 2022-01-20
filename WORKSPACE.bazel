@@ -127,26 +127,32 @@ http_archive(
     ],
 )
 
-# Format
+# File
 
-FORMAT_VERSION = "a87f0df6f3f1d8de441bf1662eddbfc4a9f075e4"
+FILE_VERSION = "084981b3013475617d86c24d67844786c0ea3452"
 
 http_archive(
-    name = "rules_format",
-    sha256 = "713e5b851071d68d51db17744c3f195ea6cfd72f8115f6b77977095faf9a5cef",
-    strip_prefix = "rules_format-%s" % FORMAT_VERSION,
-    url = "https://github.com/rivethealth/rules_format/archive/%s.tar.gz" % FORMAT_VERSION,
+    name = "rules_file",
+    sha256 = "33feee1e6318d48a41e28bffa68b7a6b29d70cf3e2cdf245e9ea98690bcbcb36",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
 )
 
-load("@rules_format//file:workspace.bzl", "files")
+load("@rules_file//file:workspace.bzl", "files")
+
+files(
+    name = "better_rules_javascript_files",
+    build = "@better_rules_javascript//:BUILD.file.bazel",
+    root_file = "@better_rules_javascript//:WORKSPACE.bazel",
+)
 
 # JavaScript
 
-JAVACRIPT_VERSION = "8112cc17fe544e0019103ecad03fc0d5e72261b1"
+JAVACRIPT_VERSION = "80e658fe7582d5baf03098ec8ddd8a49d47fcfd1"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "9e3009d5fd8d4d28199244dbc1bc7e3eb977e979fa4fd156c14b18734b76adb9",
+    sha256 = "cc1593d77ddb28d65f02a260e382959e90ed457a1abc1015a53184793070d1f5",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,
