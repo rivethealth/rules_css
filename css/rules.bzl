@@ -17,7 +17,7 @@ def _js_import_css_impl(ctx):
 
 js_import_css = rule(
     attrs = {
-        "dep": ctx.label(
+        "dep": attr.label(
             mandatory = True,
             providers = [CssInfo],
         ),
