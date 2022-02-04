@@ -5,25 +5,27 @@ cjs_root(
     name = "root",
     package_name = "@better-rules-css-test/dep",
     descriptors = ["package.json"],
-    sealed = True,
+    path = "root",
 )
 
 cjs_root(
     name = "lib_root",
     package_name = "@better-rules-css-test/dep-lib",
     descriptors = ["package.json"],
-    sealed = True,
+    path = "lib_root",
 )
 
 sass_library(
     name = "lib_sass",
     srcs = ["lib.scss"],
+    prefix = "lib_root",
     root = ":lib_root",
 )
 
 sass_library(
     name = "sass",
     srcs = ["styles.scss"],
+    prefix = "root",
     root = ":root",
     deps = [
         ":lib_sass",
@@ -33,7 +35,7 @@ sass_library(
 
 sass_bundle(
     name = "css",
-    out = "styles.css",
+    out = "root/styles.css",
     compiler = "//:sassc",
     dep = ":sass",
     main = "styles.scss",

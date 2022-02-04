@@ -47,13 +47,24 @@ rules_proto_grpc_toolchains()
 
 rules_proto_grpc_repos()
 
+# File
+
+FILE_VERSION = "084981b3013475617d86c24d67844786c0ea3452"
+
+http_archive(
+    name = "rules_file",
+    sha256 = "33feee1e6318d48a41e28bffa68b7a6b29d70cf3e2cdf245e9ea98690bcbcb36",
+    strip_prefix = "rules_file-%s" % FILE_VERSION,
+    url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
+)
+
 # JavaScript
 
-JAVACRIPT_VERSION = "8112cc17fe544e0019103ecad03fc0d5e72261b1"
+JAVACRIPT_VERSION = "abaeacdec4f530ed380e1986037e3795d3ee3092"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "9e3009d5fd8d4d28199244dbc1bc7e3eb977e979fa4fd156c14b18734b76adb9",
+    sha256 = "3c90b44906ef6dd78c7cc30742bf84ea97c8cbcf8a201c6276627b36f1ea5a1e",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,

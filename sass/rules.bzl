@@ -1,17 +1,17 @@
 load(":providers.bzl", "SassCompilerInfo", "SassInfo")
 load("//css:providers.bzl", "CssInfo")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "default_strip_prefix", "gen_manifest", "output_name", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "gen_manifest", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
 load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
-load("@better_rules_javascript//util:path.bzl", "output")
+load("@better_rules_javascript//util:path.bzl", "output", "output_name")
 
 def configure_sass_compiler(name, sass, visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = name,
         descriptors = ["@better_rules_css//sass/compiler:descriptors"],
-        strip_prefix = "better_rules_css/sass/compiler",
+        strip_prefix = "/sass/compiler",
         visibility = ["//visibility:private"],
     )
 
@@ -39,7 +39,7 @@ def configure_sass_compiler(name, sass, visibility = None):
             "@better_rules_javascript//nodejs/fs-linker:lib",
             "@better_rules_javascript//util/json:lib",
         ],
-        strip_prefix = "better_rules_css/sass/compiler",
+        strip_prefix = "/sass/compiler",
         config = "%s.tsconfig" % name,
         root = "%s.root" % name,
         visibility = ["//visibility:private"],
@@ -169,20 +169,19 @@ sass_bundle = rule(
 
 def _sass_library_impl(ctx):
     cjs_info = ctx.attr.root[CjsInfo]
+    label = ctx.label
     srcs = ctx.files.srcs
     output_ = output(ctx.label, ctx.actions)
     prefix = ctx.attr.prefix
-    strip_prefix = ctx.attr.strip_prefix or default_strip_prefix(ctx)
+    strip_prefix = ctx.attr.strip_prefix
     deps = [dep[SassInfo] for dep in ctx.attr.deps]
     workspace_name = ctx.workspace_name
 
     sass = []
     for file in srcs:
         path = output_name(
-            workspace_name = workspace_name,
             file = file,
-            root = cjs_info.package,
-            package_output = output_,
+            label = label,
             prefix = prefix,
             strip_prefix = strip_prefix,
         )

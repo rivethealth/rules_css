@@ -148,11 +148,11 @@ files(
 
 # JavaScript
 
-JAVACRIPT_VERSION = "ea9849926dd42e50652d8ab5cabfd0198e86f2a7"
+JAVACRIPT_VERSION = "abaeacdec4f530ed380e1986037e3795d3ee3092"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "d9cf5689d842f62bc03e8fbc427f43ef6907629879c48c105dae827f7e1c6b67",
+    sha256 = "3c90b44906ef6dd78c7cc30742bf84ea97c8cbcf8a201c6276627b36f1ea5a1e",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,
