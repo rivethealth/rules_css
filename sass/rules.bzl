@@ -242,7 +242,8 @@ sass_library = rule(
         ),
         "srcs": attr.label_list(
             doc = "Sass sources",
-            allow_files = [".scss"],
+            allow_files = True,
+            # allow_files = [".scss"],
         ),
         "strip_prefix": attr.string(
             doc = "Strip prefix.",
