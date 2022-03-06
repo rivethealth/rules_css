@@ -1,16 +1,40 @@
+load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_library")
+load("@better_rules_javascript//typescript:rules.bzl", "ts_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "src",
-    srcs = glob(["src/**/*.ts"]),
+cjs_root(
+    name = "root",
+    package_name = "@better-rules-css/sass-compiler",
+    descriptors = ["package.json"],
 )
 
-filegroup(
+js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
+    root = ":root",
+    deps = ["@better_rules_javascript//rules:tsconfig"],
 )
 
-filegroup(
-    name = "descriptors",
-    srcs = ["package.json"],
+ts_library(
+    name = "lib",
+    srcs = glob(["src/**/*.ts"]),
+    compile_deps = [
+        "@better_rules_css_npm//sass:lib",
+    ],
+    compiler = "//rules:tsc",
+    config = "tsconfig.json",
+    config_dep = ":tsconfig",
+    root = ":root",
+    deps = [
+        "@better_rules_css_npm//@types/argparse:lib",
+        "@better_rules_css_npm//argparse:lib",
+        "@better_rules_css_npm//enhanced-resolve:lib",
+        "@better_rules_css_npm//sass-loader:lib",
+        "@better_rules_javascript//bazel/worker:lib",
+        "@better_rules_javascript//commonjs/package:lib",
+        "@better_rules_javascript//nodejs/fs-linker:lib",
+        "@better_rules_javascript//util/json:lib",
+    ],
 )

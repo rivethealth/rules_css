@@ -4,7 +4,8 @@ def _sass_npm_alias_build(repo):
     return """
 alias(
     name = "sass",
-    actual = {label}
+    actual = {label},
+    visibility = ["//visibility:public"],
 )
     """.strip().format(
         label = json.encode(sass_npm_label(repo)),
@@ -19,6 +20,7 @@ sass_library(
     root = ":root",
     deps = {deps},
     srcs = [":files"],
+    visibility = ["//visibility:public"],
 )
     """.strip().format(
         deps = json.encode([sass_npm_label(dep) for dep in package.deps]),
@@ -34,6 +36,7 @@ sass_library(
     deps = {deps},
     srcs = glob(["npm/**/*.scss"]),
     strip_prefix = "npm",
+    visibility = ["//visibility:public"],
 )
     """.strip().format(
         deps = json.encode([sass_npm_label(dep) for dep in package.deps]),

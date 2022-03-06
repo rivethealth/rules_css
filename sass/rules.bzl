@@ -1,10 +1,10 @@
-load(":providers.bzl", "SassCompilerInfo", "SassInfo")
-load("//css:providers.bzl", "CssInfo")
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsEntries", "CjsInfo", "create_dep", "gen_manifest", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
+load("@better_rules_javascript//javascript:rules.bzl", "js_export")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
-load("@better_rules_javascript//typescript:rules.bzl", "ts_library", "tsconfig")
 load("@better_rules_javascript//util:path.bzl", "output", "output_name")
+load("//css:providers.bzl", "CssInfo", "create_css_info")
+load(":providers.bzl", "SassCompilerInfo")
 
 def configure_sass_compiler(name, sass, visibility = None):
     cjs_root(
@@ -15,34 +15,10 @@ def configure_sass_compiler(name, sass, visibility = None):
         visibility = ["//visibility:private"],
     )
 
-    tsconfig(
-        name = "%s.tsconfig" % name,
-        src = "@better_rules_css//sass/compiler:tsconfig",
-        dep = "@better_rules_javascript//rules:tsconfig",
-        root = "%s.root" % name,
-        path = "tsconfig.json",
-        visibility = ["//visibility:private"],
-    )
-
-    ts_library(
-        compiler = "@better_rules_css//rules:tsc",
+    js_export(
         name = "%s.lib" % name,
-        srcs = ["@better_rules_css//sass/compiler:src"],
-        deps = [
-            sass,
-            "@better_rules_css_npm//@types/argparse:lib",
-            "@better_rules_css_npm//argparse:lib",
-            "@better_rules_css_npm//enhanced-resolve:lib",
-            "@better_rules_css_npm//sass-loader:lib",
-            "@better_rules_javascript//bazel/worker:lib",
-            "@better_rules_javascript//commonjs/package:lib",
-            "@better_rules_javascript//nodejs/fs-linker:lib",
-            "@better_rules_javascript//util/json:lib",
-        ],
-        strip_prefix = "/sass/compiler",
-        config = "%s.tsconfig" % name,
-        root = "%s.root" % name,
-        visibility = ["//visibility:private"],
+        dep = "@better_rules_css//sass/compiler:lib",
+        deps = [sass],
     )
 
     nodejs_binary(
@@ -79,37 +55,44 @@ sass_compiler = rule(
 )
 
 def _sass_bundle(ctx):
+    actions = ctx.actions
+    cjs_root = ctx.attr.root[CjsRootInfo]
     compiler = ctx.attr.compiler[SassCompilerInfo]
-    dep = ctx.attr.dep[SassInfo]
-    cjs_info = ctx.attr.root[CjsInfo]
+    dep = ctx.attr.dep[CssInfo]
+    dep_cjs = ctx.attr.dep[CjsInfo]
+    label = ctx.label
     main = ctx.attr.main
+    manifest_bin = ctx.attr._manifest[DefaultInfo]
+    name = ctx.attr.name
     out = ctx.outputs.out
 
-    package_manifest = ctx.actions.declare_file("%s.package-manifest.json" % ctx.attr.name)
+    map = actions.declare_file("%s.map" % name)  # TODO base on out
+
+    package_manifest = actions.declare_file("%s.package-manifest.json" % name)
     gen_manifest(
-        actions = ctx.actions,
-        manifest_bin = ctx.attr._manifest[DefaultInfo],
+        actions = actions,
+        manifest_bin = manifest_bin,
         manifest = package_manifest,
-        packages = dep.transitive_packages,
-        deps = dep.transitive_deps,
-        globals = [],
+        packages = dep_cjs.transitive_packages,
+        deps = dep_cjs.transitive_links,
         package_path = package_path,
     )
 
-    args = ctx.actions.args()
+    args = actions.args()
     args.add("--manifest", package_manifest)
-    args.add("%s/%s" % (dep.package.path, main))
+    args.add("%s/%s" % (dep_cjs.package.path, main))
     args.add(out)
+    args.add(map)
     args.set_param_file_format("multiline")
     args.use_param_file("@%s", use_always = True)
 
-    ctx.actions.run(
+    actions.run(
         arguments = [args],
         executable = compiler.bin.files_to_run.executable,
         mnemonic = "SassCompile",
         inputs = depset([package_manifest], transitive = [dep.transitive_files]),
         tools = [compiler.bin.files_to_run],
-        outputs = [out],
+        outputs = [out, map],
         execution_requirements = {
             "supports-workers": "1",
         },
@@ -119,24 +102,16 @@ def _sass_bundle(ctx):
         files = depset([out]),
     )
 
+    cjs_info = create_cjs_info(
+        cjs_root = cjs_root,
+        label = label,
+    )
+
     css_info = CssInfo(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_deps = depset(),
-        transitive_files = depset([out]),
-        transitive_packages = depset([cjs_info.package]),
-        transitive_srcs = depset(),  # TODO
+        transitive_files = depset([out, map]),
     )
 
-    cjs_entries = CjsEntries(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_packages = depset([cjs_info.package]),
-        transitive_deps = depset(),
-        transitive_files = depset([out] + cjs_info.descriptors),
-    )
-
-    return [css_info, cjs_entries, default_info]
+    return [cjs_info, css_info, default_info]
 
 sass_bundle = rule(
     attrs = {
@@ -149,14 +124,14 @@ sass_bundle = rule(
         ),
         "dep": attr.label(
             mandatory = True,
-            providers = [SassInfo],
+            providers = [CssInfo],
         ),
         "main": attr.string(
             mandatory = True,
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsInfo],
+            providers = [CjsRootInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -165,20 +140,22 @@ sass_bundle = rule(
         ),
     },
     implementation = _sass_bundle,
+    provides = [CjsInfo, CssInfo],
 )
 
 def _sass_library_impl(ctx):
-    cjs_info = ctx.attr.root[CjsInfo]
-    label = ctx.label
-    srcs = ctx.files.srcs
-    output_ = output(ctx.label, ctx.actions)
+    actions = ctx.actions
+    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
+    cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
+    css_deps = [dep[CssInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
+    output_ = output(label = ctx.label, actions = actions)
     prefix = ctx.attr.prefix
     strip_prefix = ctx.attr.strip_prefix
-    deps = [dep[SassInfo] for dep in ctx.attr.deps]
-    workspace_name = ctx.workspace_name
+    label = ctx.label
 
-    sass = []
-    for file in srcs:
+    css = []
+    for file in ctx.files.srcs:
         path = output_name(
             file = file,
             label = label,
@@ -186,64 +163,46 @@ def _sass_library_impl(ctx):
             strip_prefix = strip_prefix,
         )
         if file.path == "%s/%s" % (output_.path, path):
-            sass.append(file)
+            css_ = file
         else:
-            sass_ = ctx.actions.declare_file(path)
-            ctx.actions.symlink(
-                output = sass_,
+            css_ = actions.declare_file(path)
+            actions.symlink(
                 target_file = file,
+                output = css_,
             )
-            sass.append(sass_)
+        css.append(css_)
 
-    sass_info = SassInfo(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_packages = depset(
-            [cjs_info.package],
-            transitive = [sass_info.transitive_packages for sass_info in deps],
-        ),
-        transitive_deps = depset(
-            [create_dep(
-                id = cjs_info.package.id,
-                dep = dep[SassInfo].package.id,
-                label = dep.label,
-                name = dep[SassInfo].name,
-            ) for dep in ctx.attr.deps],
-            transitive = [sass_info.transitive_deps for sass_info in deps],
-        ),
-        transitive_files = depset(
-            cjs_info.descriptors + sass,
-            transitive = [sass_info.transitive_files for sass_info in deps],
-        ),
+    cjs_info = create_cjs_info(
+        cjs_root = cjs_root,
+        deps = cjs_deps,
+        files = css,
+        label = label,
     )
 
-    cjs_entries = CjsEntries(
-        name = cjs_info.name,
-        package = cjs_info.package,
-        transitive_packages = sass_info.transitive_packages,
-        transitive_deps = sass_info.transitive_deps,
-        transitive_files = sass_info.transitive_files,
+    css_info = create_css_info(
+        files = cjs_root.descriptors + css,
+        deps = css_deps,
     )
 
-    default_info = DefaultInfo(
-        files = depset(sass),
-    )
+    default_info = DefaultInfo(files = depset(css))
 
-    return [cjs_entries, default_info, sass_info]
+    return [cjs_info, default_info, css_info]
 
 sass_library = rule(
     attrs = {
+        "global_deps": attr.label_list(
+            providers = [CjsInfo, CssInfo],
+        ),
         "deps": attr.label_list(
-            providers = [SassInfo],
+            providers = [CjsInfo, CssInfo],
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsInfo],
+            providers = [CjsRootInfo],
         ),
         "srcs": attr.label_list(
             doc = "Sass sources",
             allow_files = True,
-            # allow_files = [".scss"],
         ),
         "strip_prefix": attr.string(
             doc = "Strip prefix.",
@@ -253,4 +212,5 @@ sass_library = rule(
         ),
     },
     implementation = _sass_library_impl,
+    provides = [CssInfo],
 )

@@ -129,11 +129,11 @@ http_archive(
 
 # File
 
-FILE_VERSION = "084981b3013475617d86c24d67844786c0ea3452"
+FILE_VERSION = "dfd8ba74af217a640f64605a9cfe08bcf1cc885a"
 
 http_archive(
     name = "rules_file",
-    sha256 = "33feee1e6318d48a41e28bffa68b7a6b29d70cf3e2cdf245e9ea98690bcbcb36",
+    sha256 = "f6440ee964428778dc5a99044e8a876c2a87e4fb9a3b15aa17d8ebecea66708a",
     strip_prefix = "rules_file-%s" % FILE_VERSION,
     url = "https://github.com/rivethealth/rules_file/archive/%s.tar.gz" % FILE_VERSION,
 )
@@ -148,11 +148,11 @@ files(
 
 # JavaScript
 
-JAVACRIPT_VERSION = "abaeacdec4f530ed380e1986037e3795d3ee3092"
+JAVACRIPT_VERSION = "70ba8a514857eb53db915b40627a9c41cf5671a5"
 
 http_archive(
     name = "better_rules_javascript",
-    sha256 = "3c90b44906ef6dd78c7cc30742bf84ea97c8cbcf8a201c6276627b36f1ea5a1e",
+    sha256 = "84403391446c2ee4069ecdc2c89c0aea83aaab3e0fc51dca63206f6434692da1",
     strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
     urls = [
         "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,

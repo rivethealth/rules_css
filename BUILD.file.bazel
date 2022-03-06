@@ -72,5 +72,5 @@ filegroup(
         [
             "**/test/**",
         ],
-    ),
+    ) + glob(["files/test/**"]),
 )

@@ -37,6 +37,7 @@ function importer(): sass.LegacyAsyncImporter {
 interface SassArgs {
   manifest: string;
   output: string;
+  map: string;
   src: string;
 }
 
@@ -54,6 +55,7 @@ export class SassWorker {
     this.parser.add_argument("--manifest", { required: true });
     this.parser.add_argument("src");
     this.parser.add_argument("output");
+    this.parser.add_argument("map");
   }
 
   private readonly parser: ArgumentParser;
@@ -75,6 +77,7 @@ export class SassWorker {
     const options: sass.LegacyOptions<"async"> = {
       importer: importer(),
       file: args.src,
+      sourceMap: args.map,
     };
     const render = promisify(sass.render);
     let result: sass.LegacyResult;
@@ -87,7 +90,8 @@ export class SassWorker {
       throw e;
     }
 
-    fs.mkdirSync(path.dirname(args.output), { recursive: true });
-    fs.writeFileSync(args.output, result.css);
+    await fs.promises.mkdir(path.dirname(args.output), { recursive: true });
+    await fs.promises.writeFile(args.output, result.css);
+    await fs.promises.writeFile(args.map, result.map);
   }
 }

@@ -2,6 +2,7 @@
 bazel-*
 
 .bazel_cache
+.bazel-npm-cache.json
 .node_modules
 .yarn
 node_modules

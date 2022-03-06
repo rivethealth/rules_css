@@ -16,7 +16,7 @@ sass_bundle(<a href="#sass_bundle-name">name</a>, <a href="#sass_bundle-compiler
 | <a id="sass_bundle-compiler"></a>compiler | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 | <a id="sass_bundle-dep"></a>dep           | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 | <a id="sass_bundle-main"></a>main         | -                              | String                                                             | required  |         |
-| <a id="sass_bundle-out"></a>out           | -                              | String                                                             | required  |         |
+| <a id="sass_bundle-out"></a>out           | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 | <a id="sass_bundle-root"></a>root         | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required  |         |
 
 <a id="#sass_compiler"></a>
@@ -39,7 +39,7 @@ sass_compiler(<a href="#sass_compiler-name">name</a>, <a href="#sass_compiler-bi
 ## sass_library
 
 <pre>
-sass_library(<a href="#sass_library-name">name</a>, <a href="#sass_library-deps">deps</a>, <a href="#sass_library-prefix">prefix</a>, <a href="#sass_library-root">root</a>, <a href="#sass_library-srcs">srcs</a>, <a href="#sass_library-strip_prefix">strip_prefix</a>)
+sass_library(<a href="#sass_library-name">name</a>, <a href="#sass_library-deps">deps</a>, <a href="#sass_library-global_deps">global_deps</a>, <a href="#sass_library-prefix">prefix</a>, <a href="#sass_library-root">root</a>, <a href="#sass_library-srcs">srcs</a>, <a href="#sass_library-strip_prefix">strip_prefix</a>)
 </pre>
 
 **ATTRIBUTES**
@@ -48,6 +48,7 @@ sass_library(<a href="#sass_library-name">name</a>, <a href="#sass_library-deps"
 | :------------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------------- | :-------- | :------ |
 | <a id="sass_library-name"></a>name                 | A unique name for this target. | <a href="https://bazel.build/docs/build-ref.html#name">Name</a>             | required  |         |
 | <a id="sass_library-deps"></a>deps                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
+| <a id="sass_library-global_deps"></a>global_deps   | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
 | <a id="sass_library-prefix"></a>prefix             | Prefix                         | String                                                                      | optional  | ""      |
 | <a id="sass_library-root"></a>root                 | -                              | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a>          | required  |         |
 | <a id="sass_library-srcs"></a>srcs                 | Sass sources                   | <a href="https://bazel.build/docs/build-ref.html#labels">List of labels</a> | optional  | []      |
