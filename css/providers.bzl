@@ -5,10 +5,10 @@ CssInfo = provider(
     },
 )
 
-def create_css_info(files = [], deps = []):
+def create_css_info(cjs_root, files = [], deps = []):
     return CssInfo(
         transitive_files = depset(
             files,
-            transitive = [dep.transitive_files for dep in deps],
+            transitive = [cjs_root.transitive_files] + [dep.transitive_files for dep in deps],
         ),
     )

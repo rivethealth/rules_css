@@ -1,11 +1,11 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_cjs_info")
 load("@better_rules_javascript//javascript:providers.bzl", "JsInfo", "create_js_info")
 load("@better_rules_javascript//util:path.bzl", "output", "output_name", "runfile_path")
 load(":providers.bzl", "CssInfo", "create_css_info")
 
 def _css_library_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
     cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
     css_deps = [dep[CssInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
@@ -41,7 +41,8 @@ def _css_library_impl(ctx):
     )
 
     css_info = create_css_info(
-        files = cjs_root.descriptors + css,
+        cjs_root = cjs_root,
+        files = css,
         deps = css_deps,
     )
 
@@ -64,7 +65,7 @@ css_library = rule(
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "srcs": attr.label_list(
             allow_files = True,

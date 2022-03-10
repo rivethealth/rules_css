@@ -1,4 +1,4 @@
-load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "CjsRootInfo", "create_cjs_info", "gen_manifest", "package_path")
+load("@better_rules_javascript//commonjs:providers.bzl", "CjsInfo", "create_cjs_info", "gen_manifest", "package_path")
 load("@better_rules_javascript//commonjs:rules.bzl", "cjs_root")
 load("@better_rules_javascript//javascript:rules.bzl", "js_export")
 load("@better_rules_javascript//nodejs:rules.bzl", "nodejs_binary")
@@ -56,7 +56,7 @@ sass_compiler = rule(
 
 def _sass_bundle(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     compiler = ctx.attr.compiler[SassCompilerInfo]
     dep = ctx.attr.dep[CssInfo]
     dep_cjs = ctx.attr.dep[CjsInfo]
@@ -131,7 +131,7 @@ sass_bundle = rule(
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "_manifest": attr.label(
             cfg = "exec",
@@ -145,7 +145,7 @@ sass_bundle = rule(
 
 def _sass_library_impl(ctx):
     actions = ctx.actions
-    cjs_root = ctx.attr.root[CjsRootInfo]
+    cjs_root = ctx.attr.root[CjsInfo]
     cjs_deps = [dep[CjsInfo] for dep in ctx.attr.deps]
     cjs_globals = [dep[CjsInfo] for dep in ctx.attr.global_deps]
     css_deps = [dep[CssInfo] for dep in ctx.attr.deps + ctx.attr.global_deps]
@@ -180,7 +180,8 @@ def _sass_library_impl(ctx):
     )
 
     css_info = create_css_info(
-        files = cjs_root.descriptors + css,
+        files = css,
+        cjs_root = cjs_root,
         deps = css_deps,
     )
 
@@ -198,7 +199,7 @@ sass_library = rule(
         ),
         "root": attr.label(
             mandatory = True,
-            providers = [CjsRootInfo],
+            providers = [CjsInfo],
         ),
         "srcs": attr.label_list(
             doc = "Sass sources",
