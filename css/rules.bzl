@@ -75,7 +75,7 @@ css_library = rule(
         ),
     },
     doc = "CSS library",
-    implementation = _js_library_impl,
+    implementation = _css_library_impl,
     provides = [CjsInfo, JsInfo],
 )
 
