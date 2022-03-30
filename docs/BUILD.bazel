@@ -29,4 +29,5 @@ nodejs_binary(
     name = "doctoc",
     dep = "@better_rules_css_npm//doctoc:lib",
     main = "doctoc.js",
+    node = "@better_rules_javascript//rules:nodejs",
 )

@@ -25,6 +25,7 @@ def configure_sass_compiler(name, sass, visibility = None):
         name = "%s.bin" % name,
         dep = "%s.lib" % name,
         main = "src/main.js",
+        node = "@better_rules_javascript//rules:nodejs",
         visibility = ["//visibility:private"],
     )
 

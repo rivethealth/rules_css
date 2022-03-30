@@ -47,11 +47,11 @@ def test_repositories0():
 
     # JavaScript
 
-    JAVACRIPT_VERSION = "39378f8f211cb98b76aa4a1f8daa08d1e10ad655"
+    JAVACRIPT_VERSION = "59a751bc9970c739f90d932b16bc7643f93e6d47"
 
     http_archive(
         name = "better_rules_javascript",
-        sha256 = "878863262c52e05845137451963dae819927ceae6530da8e99df1a7923f4b3e5",
+        sha256 = "d02cf6b05c916941820e1089dbcb2493304a2114f6a6bd891cdfa35e9d0b532d",
         strip_prefix = "rules_javascript-%s" % JAVACRIPT_VERSION,
         urls = [
             "https://github.com/rivethealth/rules_javascript/archive/%s.zip" % JAVACRIPT_VERSION,
