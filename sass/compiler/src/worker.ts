@@ -63,7 +63,7 @@ export class SassWorker {
       PackageTree.json(),
       fs.readFileSync(manifest, "utf8"),
     );
-    const vfs = createVfs(packageTree, false);
+    const vfs = createVfs(packageTree, undefined);
     this.vfs.delegate = vfs;
   }
 
