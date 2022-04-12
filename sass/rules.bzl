@@ -95,6 +95,7 @@ def _sass_bundle(ctx):
         tools = [compiler.bin.files_to_run],
         outputs = [out, map],
         execution_requirements = {
+            "requires-worker-protocol": "json",
             "supports-workers": "1",
         },
     )
