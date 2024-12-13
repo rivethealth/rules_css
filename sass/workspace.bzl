@@ -23,7 +23,7 @@ sass_library(
     visibility = ["//visibility:public"],
 )
     """.strip().format(
-        deps = json.encode([sass_npm_label(dep) for dep in package.deps]),
+        deps = json.encode([sass_npm_label(dep.id) for dep in package.deps]),
     )
 
 def _sass_npm_package_build(package):
@@ -39,11 +39,11 @@ sass_library(
     visibility = ["//visibility:public"],
 )
     """.strip().format(
-        deps = json.encode([sass_npm_label(dep) for dep in package.deps]),
+        deps = json.encode([sass_npm_label(dep.id) for dep in package.deps]),
     )
 
 def sass_directory_npm_plugin():
-    def alias_build(repo):
+    def alias_build(package_name, repo):
         return _sass_npm_alias_build(repo)
 
     def package_build(package, files):
@@ -55,7 +55,7 @@ def sass_directory_npm_plugin():
     )
 
 def sass_npm_plugin():
-    def alias_build(repo):
+    def alias_build(package_name, repo):
         return _sass_npm_alias_build(repo)
 
     def package_build(package, files):

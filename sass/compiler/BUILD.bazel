@@ -14,7 +14,7 @@ js_library(
     name = "tsconfig",
     srcs = ["tsconfig.json"],
     root = ":root",
-    deps = ["@better_rules_javascript//rules:tsconfig"],
+    deps = ["@better_rules_javascript//tools/typescript:tsconfig"],
 )
 
 ts_library(

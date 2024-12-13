@@ -6,7 +6,7 @@ load("@better_rules_javascript//util:path.bzl", "output", "output_name")
 load("//css:providers.bzl", "CssInfo", "create_css_info")
 load(":providers.bzl", "SassCompilerInfo")
 
-def configure_sass_compiler(name, sass, visibility = None):
+def configure_sass_compiler(name, sass, node, visibility = None):
     cjs_root(
         name = "%s.root" % name,
         package_name = name,
@@ -25,7 +25,7 @@ def configure_sass_compiler(name, sass, visibility = None):
         name = "%s.bin" % name,
         dep = "%s.lib" % name,
         main = "src/main.js",
-        node = "@better_rules_javascript//rules:nodejs",
+        node = node,
         visibility = ["//visibility:private"],
     )
 
